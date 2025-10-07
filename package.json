@@ -1,0 +1,24 @@
+{
+  "name": "nodejs_ejs",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Karam-08/nodeJS_ejs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Karam-08/nodeJS_ejs/issues"
+  },
+  "homepage": "https://github.com/Karam-08/nodeJS_ejs#readme",
+  "description": "",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}
