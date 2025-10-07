@@ -1,6 +1,26 @@
 import express from 'express'
+import {readFile, writeFile, mkdir} from 'fs/promises'
+import path from 'path'
+import { fileURLToPath } from 'url'
 const app = express()
 const PORT = 3000
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const DATA_DIRECTORY = path.join(__dirname, 'data')
+const DATA_FILE = path.join(DATA_DIRECTORY, students.json)
+
+// Load and save helper functions
+async function ensureDataFile(){
+    try{
+        await mkdir(DATA_DIRECTORY, {recursive:true})
+        // If the file doesn't exist, then it creates it with []
+        await readFile(DATA_FILE, '[]', 'utf8')
+    }catch(err){
+        await writeFile(DATA_FILE, "[]", 'utf8')
+    }
+}
 
 // Set EJS as the template engine for the project
 app.set('view engine', 'ejs')
