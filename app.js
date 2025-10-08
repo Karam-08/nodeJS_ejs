@@ -1,6 +1,6 @@
 import express from 'express'
 import {readFile, writeFile, mkdir} from 'fs/promises'
-import path from 'path'
+import path, { parse } from 'path'
 import { fileURLToPath } from 'url'
 const app = express()
 const PORT = 3000
@@ -22,14 +22,24 @@ async function ensureDataFile(){
     }
 }
 
+async function loadStudents(){
+    await ensureDataFile()
+    const rawData = await readFile(DATA_FILE, 'utf8')
+    return JSON.parse(rawData)
+}
+
+async function saveStudents(students){
+    await writeFile(DATA_FILE, JSON.stringify(students, null, 2), 'utf8')
+}
+
 // Set EJS as the template engine for the project
 app.set('view engine', 'ejs')
 
 // Public Static folder
 app.use(express.static('public'))
 
-// Student data
-const students = 
+// Parse form body info: application/x-www-form-urlencoded
+app.use(express.urlencoded({extended: false}))
 
 // Routes for users
 app.get('/', (req, res) =>{
@@ -38,8 +48,50 @@ app.get('/', (req, res) =>{
     // The object with tutle and the string are being passed directly into the template, consider it like adding parameters to a function but here, there the index.ejs will be created using that data
 })
 
-app.get('/students', (req, res) =>{
-    res.render('students', {title: "Our students", students})
+app.get('/students', async (req, res) =>{
+    const students = await loadStudents()
+    res.render('students', {
+        title: "Our students", 
+        students, 
+        errors: null, 
+        form: {name: "", age: "", grade: ""},
+        flash: req.query.flash || null
+    })
+})
+
+app.post('/students', async (req, res) =>{
+    const {name, grade, age} = req.body
+
+    // data validation
+    const errors = []
+
+    if(!name.trim()){errors.push("Name is required.")}
+    if(!grade.trim()){errors.push("Grade is required.")}
+    const parseAge = Number(age)
+    if(!Number.isFinite(parseAge) || parseAge < 5 || parseAge > 120){
+        errors.push("Age must be a valid number between 5 and 120")
+    }
+
+    // error check
+    if(errors.length){
+        const students = await loadStudents()
+        return res.status(400).render('students', {
+            title: "Our Students",
+            students,
+            errors,
+            form: {name, grade, age},
+            flash: null
+        })
+    }
+
+    // Save to json
+    const students = await loadStudents()
+    students.push({name: name.trim(), grade: grade.trim(), age: parseAge})
+    await saveStudents(students)
+
+    // PRG(Post/Redirect/Get) with a simple flash
+    res.redirect('/students?flash=Student%20Added%20Successfully')
+
 })
 
 app.listen(PORT, () =>{

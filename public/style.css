@@ -28,3 +28,24 @@ footer{
     padding: 1rem;
     background-color: black;
 }
+
+.flash{
+    padding: 0.5rem 1rem;
+    background-color: #ecfdF5;
+    border: 1px solid #10b981;
+    border-radius: 8px;
+}
+
+.errors{
+    padding: 0.75rem 1rem;
+    background-color: #fef2f2;
+    border: 1px solid #ef4444;
+    border-radius: 8px;
+}
+
+.form{
+    margin: 1rem 0;
+    display: grid;
+    gap: 0.75rem;
+    max-width: 420px;
+}

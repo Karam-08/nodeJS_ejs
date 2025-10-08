@@ -1,6 +1,37 @@
 <%- include("partials/header") %>
 
 <h2><%= title %></h2>
+<% if(flash){ %>
+    <p class="flash">
+        <%= flash %>
+    </p>
+<% } %>
+
+<% if(errors && errors.length){ %>
+    <div class="errors">
+        <strong>Please Fix the following:</strong>
+        <ul>
+            <% students.forEach(error =>{ %>
+                <li><%= error &></li>
+            <% }) %>
+        </ul>
+    </div>
+<% } &>
+
+<form action="/students" method="POST" class="form">
+    <label>Name:
+        <input type="text" name="name" value="<%- form.name &>" required>
+    </label>
+    <label>Grade:
+        <input type="text" name="grade" value="<%- form.grade &>" required placeholder="A, B+, C-..etc">
+    </label>
+    <label>Age:
+        <input type="number" name="age" value="<%- form.age &>" required>
+    </label>
+    <button type="submit">Add Student</button>
+</form>
+<hr>
+
 <ul>
     <% students.forEach(student =>{ %>
         <li>
